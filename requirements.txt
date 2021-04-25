@@ -1,9 +1,12 @@
+alembic==1.5.8
 attrs==20.3.0
 click==7.1.2
 fastapi==0.63.0
 greenlet==1.0.0
 h11==0.12.0
 iniconfig==1.1.1
+Mako==1.1.4
+MarkupSafe==1.1.1
 packaging==20.9
 pkg-resources==0.0.0
 pluggy==0.13.1
@@ -12,6 +15,10 @@ pycryptodome==3.10.1
 pydantic==1.8.1
 pyparsing==2.4.7
 pytest==6.2.3
+python-dateutil==2.8.1
+python-dotenv==0.17.0
+python-editor==1.0.4
+six==1.15.0
 SQLAlchemy==1.4.11
 starlette==0.13.6
 toml==0.10.2
