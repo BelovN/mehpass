@@ -1,5 +1,7 @@
+# thirdparty
 import uvicorn
 
+# project
 from .settings import settings
 
 uvicorn.run(

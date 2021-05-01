@@ -1,6 +1,8 @@
+# thirdparty
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship
 
+# project
 from auth.tables import User
 from mehpass.database import Base
 

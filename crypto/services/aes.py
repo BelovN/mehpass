@@ -1,6 +1,4 @@
-"""Модуль для шифрования в AES."""
-
-# thirsty
+# thirdparty
 from Crypto.Cipher import AES
 
 

@@ -1,6 +1,8 @@
+# fastapi
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
+# app
 from auth.models.auth import Token, UserCreate
 from auth.services.auth import AuthService
 

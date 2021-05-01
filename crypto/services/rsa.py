@@ -1,5 +1,3 @@
-"""Модуль для кодирования и декодировния в RSA."""
-
 # thirdparty
 from Crypto import Random
 from Crypto.PublicKey import RSA
