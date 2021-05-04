@@ -1,14 +1,21 @@
+# stdlib
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException, status, Depends
-from fastapi.security import OAuth2PasswordBearer
+# thirdparty
 from jose import jwt
 from jose.exceptions import JWTError
 from passlib.hash import bcrypt
 from pydantic import ValidationError
 
+# fastapi
+from fastapi import HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
+
+# project
 from mehpass.database import Session, get_session
 from mehpass.settings import settings
+
+# app
 from .. import tables
 from ..models.auth import User, Token, UserCreate
 
@@ -26,7 +33,7 @@ class AuthService:
         return bcrypt.verify(plain_password, hashed_password)
 
     @classmethod
-    def has_password(cls, password: str) -> str:
+    def hash_password(cls, password: str) -> str:
         return bcrypt.hash(password)
 
     @classmethod
@@ -74,7 +81,7 @@ class AuthService:
 
     def register_new_user(self, user_data: UserCreate) -> Token:
         user = tables.User(
-            username=user_data.username, password=self.has_password(user_data.password),
+            username=user_data.username, password=self.hash_password(user_data.password),
         )
 
         self.session.add(user)
