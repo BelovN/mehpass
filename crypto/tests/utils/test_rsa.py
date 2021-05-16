@@ -5,13 +5,6 @@ import pytest
 from crypto.services.rsa import encrypt, decrypt, generate_random_rsa_keys
 
 
-def test_generate_key():
-    pubkey, seckey = generate_random_rsa_keys()
-    assert pubkey
-    assert seckey
-    assert pubkey != seckey
-
-
 @pytest.fixture
 def rsa_key():
     return generate_random_rsa_keys()
@@ -21,6 +14,13 @@ def rsa_key():
 def message():
     msg = "Encrypt this message".encode()
     return msg
+
+
+def test_generate_key():
+    pubkey, seckey = generate_random_rsa_keys()
+    assert pubkey
+    assert seckey
+    assert pubkey != seckey
 
 
 def test_encrypt_decrypt(message, rsa_key):
