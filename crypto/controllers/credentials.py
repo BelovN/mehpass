@@ -11,8 +11,8 @@ from auth.services.auth import get_current_user
 from auth.tables import User
 
 # app
-from crypto.models.passwords import Password, PasswordCreate, PasswordUpdate
-from crypto.services.passwords import PasswordsManager
+from crypto.models.credentials import Password, PasswordCreate, PasswordUpdate
+from crypto.services.credentials import CredentialService
 
 
 router = APIRouter(prefix="/passwords")
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/passwords")
 
 @router.get("/", response_model=List[Password])
 def get_passwords(
-    service: PasswordsManager = Depends(), user: User = Depends(get_current_user)
+    service: CredentialService = Depends(), user: User = Depends(get_current_user)
 ):
     passwords = service.get_list(user_id=user.id)
     return passwords
@@ -29,7 +29,7 @@ def get_passwords(
 @router.get("/{password_id}", response_model=Password)
 def get_password(
     password_id: int,
-    service: PasswordsManager = Depends(),
+    service: CredentialService = Depends(),
     user: User = Depends(get_current_user),
 ):
     return service.get(user_id=user.id, password_id=password_id)
@@ -38,7 +38,7 @@ def get_password(
 @router.put("/", response_model=Password)
 def create_password(
     password_data: PasswordCreate,
-    service: PasswordsManager = Depends(),
+    service: CredentialService = Depends(),
     user: User = Depends(get_current_user),
 ):
     return service.create(user_id=user.id, password_data=password_data)
@@ -48,7 +48,7 @@ def create_password(
 def update_password(
     password_id: int,
     password_data: PasswordUpdate,
-    service: PasswordsManager = Depends(),
+    service: CredentialService = Depends(),
     user: User = Depends(get_current_user),
 ):
     return service.update(
@@ -59,7 +59,7 @@ def update_password(
 @router.delete("/{password_id}")
 def delete_password(
     password_id: int,
-    service: PasswordsManager = Depends(),
+    service: CredentialService = Depends(),
     user: User = Depends(get_current_user),
 ):
     service.delete(password_id=password_id, user_id=user.id)

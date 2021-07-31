@@ -1,20 +1,20 @@
 # stdlib
 from typing import List
 
-# thirdparty
-from starlette import status
+# project
+from crypto import tables as crypto_tables
+from crypto.models.credentials import PasswordCreate, PasswordUpdate
 
 # fastapi
 from fastapi import Depends
 from fastapi.exceptions import HTTPException
-
-# project
-from crypto.models.passwords import PasswordCreate, PasswordUpdate
-from crypto import tables as crypto_tables
 from mehpass.database import Session, get_session
 
+# thirdparty
+from starlette import status
 
-class PasswordsManager:
+
+class CredentialService:
     def __init__(self, session: Session = Depends(get_session)):
         self.session = session
 
