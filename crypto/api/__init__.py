@@ -2,7 +2,7 @@
 from fastapi import APIRouter
 
 # app
-from .passwords import router as passwords_router
+from crypto.controllers.credentials import router as passwords_router
 
 
 router = APIRouter()

@@ -3,25 +3,44 @@ from Crypto import Random
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
-
-def generate_random_rsa_keys():
-    """Создаем случайные RSA ключи."""
-    random_generator = Random.new().read
-    rsa_key = RSA.generate(1024, random_generator)
-    return rsa_key.publickey().exportKey(), rsa_key.exportKey()
+# project
+from crypto.entities.rsa import RSAKeysEntity, RSAPrivateKeyEntity, RSAPublicKeyEntity
 
 
-def encrypt(pubkey, message):  # TODO: TypeHints
-    """Кодирование в RSA c помощью публичного ключа."""
-    key = RSA.importKey(pubkey)
-    cipher = PKCS1_OAEP.new(key)
-    encrypted = cipher.encrypt(message)
-    return encrypted
+class RSAManager:
+    encoding: str = "utf-8"
 
+    @classmethod
+    def generate_random_rsa_keys(cls, bits: int = 1024) -> RSAKeysEntity:
+        """Создаем случайные RSA ключи."""
+        random_generator = Random.new().read
+        rsa_key = RSA.generate(bits, random_generator)
 
-def decrypt(seckey, encrypted):  # TODO: TypeHints
-    """Декодирование из RSA c помощью приватного ключа."""
-    rsa_key = RSA.importKey(seckey)
-    cipher = PKCS1_OAEP.new(rsa_key)
-    decrypted = cipher.decrypt(encrypted)
-    return decrypted
+        return RSAKeysEntity.from_keys(
+            private_key=rsa_key.exportKey(), public_key=rsa_key.public_key().exportKey()
+        )
+
+    @classmethod
+    def encrypt(cls, public_key: RSAPublicKeyEntity, message: str) -> bytes:
+        """Кодирование в RSA c помощью публичного ключа."""
+        key = RSA.importKey(public_key.key)
+        cipher = PKCS1_OAEP.new(key)
+
+        # => Конвертируем в байты
+        message_bytes = bytes(message, encoding=cls.encoding)
+
+        encrypted = cipher.encrypt(message_bytes)
+        return encrypted
+
+    @classmethod
+    def decrypt(cls, private_key: RSAPrivateKeyEntity, encrypted: bytes) -> str:
+        """Декодирование из RSA c помощью приватного ключа."""
+
+        # => Импортируем ключ
+        rsa_key = RSA.importKey(private_key.key)
+        cipher = PKCS1_OAEP.new(rsa_key)
+
+        # => Расшифровываем
+        decrypted = cipher.decrypt(encrypted)
+
+        return decrypted.decode(cls.encoding)
