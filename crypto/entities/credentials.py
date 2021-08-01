@@ -1,21 +1,15 @@
-# stdlib
-from dataclasses import dataclass
-from datetime import datetime
+# thirdparty
+from pydantic import BaseModel
+
+# project
+from .base import DateInfoMixin
 
 
-@dataclass
-class DateInfoMixin:
-    created_at: datetime
-    last_update: datetime
-
-
-@dataclass
-class ServiceInfoMixin:
+class ServiceInfoMixin(BaseModel):
     service_name: str
     url: str
 
 
-@dataclass
 class CredentialsBase(DateInfoMixin, ServiceInfoMixin):
     login: str
     password: str

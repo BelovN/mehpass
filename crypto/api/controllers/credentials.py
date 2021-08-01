@@ -7,11 +7,11 @@ from fastapi import APIRouter, Depends, Response
 # project
 from starlette import status
 
-from auth.services.auth import get_current_user
+from auth.api.controllers.auth import get_current_user
 from auth.tables import User
 
 # app
-from crypto.models.credentials import Password, PasswordCreate, PasswordUpdate
+from crypto.api.models.credentials import Password, PasswordCreate, PasswordUpdate
 from crypto.services.credentials import CredentialService
 
 

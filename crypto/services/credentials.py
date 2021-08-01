@@ -3,7 +3,7 @@ from typing import List
 
 # project
 from crypto import tables as crypto_tables
-from crypto.models.credentials import PasswordCreate, PasswordUpdate
+from crypto.api.models.credentials import PasswordCreate, PasswordUpdate
 
 # fastapi
 from fastapi import Depends

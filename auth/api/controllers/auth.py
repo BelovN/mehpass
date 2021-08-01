@@ -16,19 +16,19 @@ from mehpass.database import Session, get_session
 from mehpass.settings import settings
 
 # app
-from .. import tables
-from ..models.auth import User, Token, UserCreate
-from .validators import get_username_validator, get_pwd_validator, PWD_ERROR_MSG
+from auth import tables
+from auth.api.models.auth import User, Token, UserCreate
+from auth.api.utils.validators import get_username_validator, get_pwd_validator, PWD_ERROR_MSG
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/sign-in")
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     """Обратная зависимоть для проверки аутенификации пользователя"""
-    return AuthService.validate_token(token)
+    return AuthController.validate_token(token)
 
 
-class AuthService:
+class AuthController:
     @classmethod
     def __verify_password(cls, plain_password: str, hashed_password: str) -> bool:
         return bcrypt.verify(plain_password, hashed_password)
@@ -139,7 +139,7 @@ class AuthService:
         )
         return user
 
-    def __check_user_exists(self, username: str) -> bool:
+    def __check_user_exists(self, username: str) -> None:
         """Проерка существует ли пользователь"""
 
         user = self.__get_user(username=username)

@@ -1,26 +1,21 @@
 from __future__ import annotations
 
+from pydantic import BaseModel
 
-from dataclasses import dataclass
 
-
-@dataclass
-class KeyEntity:
+class KeyEntity(BaseModel):
     key: bytes
 
 
-@dataclass
 class RSAPublicKeyEntity(KeyEntity):
     pass
 
 
-@dataclass
 class RSAPrivateKeyEntity(KeyEntity):
     pass
 
 
-@dataclass
-class RSAKeysEntity:
+class RSAKeysEntity(BaseModel):
     public_key: RSAPublicKeyEntity
     private_key: RSAPrivateKeyEntity
 
