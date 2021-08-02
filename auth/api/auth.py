@@ -3,19 +3,19 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 # app
-from auth.api.models.auth import Token, UserCreate
-from auth.api.controllers import AuthController
+from auth.api.schemas.auth import TokenSchema, UserCreateSchema
+from auth.api.controllers.auth import AuthController
 
 
 router = APIRouter(prefix="/auth")
 
 
-@router.post("/sign-up", response_model=Token)
-def sign_up(user_data: UserCreate, service: AuthController = Depends()):
+@router.post("/sign-up", response_model=TokenSchema)
+def sign_up(user_data: UserCreateSchema, service: AuthController = Depends()):
     return service.register(user_data)
 
 
-@router.post("/sign-in", response_model=Token)
+@router.post("/sign-in", response_model=TokenSchema)
 def sign_in(
     form_data: OAuth2PasswordRequestForm = Depends(), service: AuthController = Depends()
 ):

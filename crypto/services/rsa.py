@@ -4,7 +4,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 # project
-from crypto.entities.rsa import RSAKeysEntity, RSAPrivateKeyEntity, RSAPublicKeyEntity
+from crypto.services.entities.rsa import RSAKeysEntity, RSAPrivateKeyEntity, RSAPublicKeyEntity
 
 
 class RSAManager:

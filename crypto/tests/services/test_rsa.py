@@ -2,7 +2,7 @@
 from faker import Faker
 
 # app
-from crypto.entities.rsa import RSAPublicKeyEntity, RSAPrivateKeyEntity, RSAKeysEntity
+from crypto.services.entities.rsa import RSAPublicKeyEntity, RSAPrivateKeyEntity, RSAKeysEntity
 from crypto.services.rsa import RSAManager
 
 fake = Faker()

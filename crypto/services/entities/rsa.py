@@ -23,7 +23,7 @@ class RSAKeysEntity(BaseModel):
     def from_keys(cls, public_key: bytes, private_key: bytes) -> RSAKeysEntity:
         """Собрать Entity из ключей"""
 
-        public_key_entity = RSAPublicKeyEntity(public_key)
-        private_key_entity = RSAPrivateKeyEntity(private_key)
+        public_key_entity = RSAPublicKeyEntity(key=public_key)
+        private_key_entity = RSAPrivateKeyEntity(key=private_key)
 
         return cls(public_key=public_key_entity, private_key=private_key_entity)

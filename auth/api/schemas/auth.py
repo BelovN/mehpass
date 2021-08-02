@@ -2,21 +2,21 @@
 from pydantic import BaseModel
 
 
-class BaseUser(BaseModel):
+class BaseUserSchema(BaseModel):
     username: str
 
 
-class UserCreate(BaseUser):
+class UserCreateSchema(BaseUserSchema):
     password: str
 
 
-class User(BaseUser):
+class UserSchema(BaseUserSchema):
     id: int
 
     class Config:
         orm_mode = True
 
 
-class Token(BaseModel):
+class TokenSchema(BaseModel):
     access_token: str
     token_type: str = "bearer"

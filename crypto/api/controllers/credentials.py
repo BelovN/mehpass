@@ -7,18 +7,17 @@ from fastapi import APIRouter, Depends, Response
 # project
 from starlette import status
 
+# app
 from auth.api.controllers.auth import get_current_user
 from auth.tables import User
-
-# app
-from crypto.api.models.credentials import Password, PasswordCreate, PasswordUpdate
+from crypto.api.schemas.credentials import CredentialSchema, CredentialCreateSchema, CredentialUpdateSchema
 from crypto.services.credentials import CredentialService
 
 
 router = APIRouter(prefix="/passwords")
 
 
-@router.get("/", response_model=List[Password])
+@router.get("/", response_model=List[CredentialSchema])
 def get_passwords(
     service: CredentialService = Depends(), user: User = Depends(get_current_user)
 ):
@@ -26,7 +25,7 @@ def get_passwords(
     return passwords
 
 
-@router.get("/{password_id}", response_model=Password)
+@router.get("/{password_id}", response_model=CredentialSchema)
 def get_password(
     password_id: int,
     service: CredentialService = Depends(),
@@ -35,19 +34,19 @@ def get_password(
     return service.get(user_id=user.id, password_id=password_id)
 
 
-@router.put("/", response_model=Password)
+@router.put("/", response_model=CredentialSchema)
 def create_password(
-    password_data: PasswordCreate,
+    password_data: CredentialCreateSchema,
     service: CredentialService = Depends(),
     user: User = Depends(get_current_user),
 ):
     return service.create(user_id=user.id, password_data=password_data)
 
 
-@router.post("/{password_id}", response_model=Password)
+@router.post("/{password_id}", response_model=CredentialSchema)
 def update_password(
     password_id: int,
-    password_data: PasswordUpdate,
+    password_data: CredentialUpdateSchema,
     service: CredentialService = Depends(),
     user: User = Depends(get_current_user),
 ):

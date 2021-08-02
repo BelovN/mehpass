@@ -12,18 +12,23 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 # project
+from crypto.api.schemas.jwt import JWTSchema
 from mehpass.database import Session, get_session
 from mehpass.settings import settings
 
 # app
 from auth import tables
-from auth.api.models.auth import User, Token, UserCreate
-from auth.api.utils.validators import get_username_validator, get_pwd_validator, PWD_ERROR_MSG
+from auth.api.schemas.auth import UserSchema, TokenSchema, UserCreateSchema
+from auth.api.utils.validators import (
+    get_username_validator,
+    get_pwd_validator,
+    PWD_ERROR_MSG,
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/sign-in")
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+def get_current_user(token: str = Depends(oauth2_scheme)) -> UserSchema:
     """Обратная зависимоть для проверки аутенификации пользователя"""
     return AuthController.validate_token(token)
 
@@ -38,7 +43,7 @@ class AuthController:
         return bcrypt.hash(password)
 
     @classmethod
-    def validate_token(cls, token: str) -> User:
+    def validate_token(cls, token: str) -> UserSchema:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -54,36 +59,37 @@ class AuthController:
         user_data = payload.get("user")
 
         try:
-            user = User.parse_obj(user_data)
+            user = UserSchema.parse_obj(user_data)
         except ValidationError:
             raise exception from None
 
         return user
 
     @classmethod
-    def __create_token(cls, user: tables.User) -> Token:
+    def __create_token(cls, user: tables.User) -> TokenSchema:
         """Создание токена для пользователя"""
-        user_data = User.from_orm(user)
+        user_data = UserSchema.from_orm(user)
 
         now = datetime.utcnow()
-        payload = {
-            "iat": now,
-            "nbf": now,
-            "exp": now + timedelta(seconds=settings.jwt_expiration),
-            "sub": str(user_data.id),
-            "user": user_data.dict(),
-        }
+        payload = JWTSchema(
+            iat=now,
+            nbf=now,
+            exp=now + timedelta(seconds=settings.jwt_expiration),
+            sub=str(user_data.id),
+            user=user_data,
+        ).dict()
+
         token = jwt.encode(
             payload, settings.jwt_secret, algorithm=settings.jwt_algorithm
         )
-        return Token(access_token=token)
+        return TokenSchema(access_token=token)
 
     def __init__(self, session: Session = Depends(get_session)):
         self.session = session
         self.username_validator = get_username_validator()
         self.password_validator = get_pwd_validator()
 
-    def register(self, user_data: UserCreate) -> Token:
+    def register(self, user_data: UserCreateSchema) -> TokenSchema:
         """Регистрация нового пользователя"""
         self.__check_user_exists(user_data.username)
         self.__validate_credentials(user_data.username, user_data.password)
@@ -92,7 +98,7 @@ class AuthController:
             username=user_data.username, password=user_data.password
         )
 
-    def authenticate(self, username: str, password: str) -> Token:
+    def authenticate(self, username: str, password: str) -> TokenSchema:
         """Аутентификация пользователя"""
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -120,7 +126,7 @@ class AuthController:
             exception.detail = str(e)
             raise exception
 
-    def __create_user(self, username: str, password: str) -> Token:
+    def __create_user(self, username: str, password: str) -> TokenSchema:
         """Сохранение пользователя в БД"""
 
         user = tables.User(username=username, password=self.__hash_password(password),)
